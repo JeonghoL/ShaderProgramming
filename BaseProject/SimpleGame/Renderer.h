@@ -16,6 +16,8 @@ public:
 	bool IsInitialized();
 	void DrawSolidRect(float x, float y, float z, float size, float r, float g, float b, float a);
 	void DrawTriangle();
+	void GenParticle(int count);
+	void DrawParticle();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -35,5 +37,8 @@ private:
 
 	GLuint m_TriangleVBO = 0;
 	GLuint m_TriangleShader = 0;
+
+	GLuint m_ParticleVBO = 0;
+	int m_ParticleCount = 0;
 };
 

@@ -24,7 +24,7 @@ void RenderScene(void)
 
 	// Renderer Test
 	g_Renderer->DrawSolidRect(0, 0, 0, 4, 1, 0, 1, 1);
-	g_Renderer->DrawTriangle();
+	g_Renderer->DrawParticle();
 
 	glutSwapBuffers();
 }
@@ -74,6 +74,8 @@ int main(int argc, char **argv)
 	{
 		std::cout << "Renderer could not be initialized.. \n";
 	}
+
+	g_Renderer->GenParticle(1000);
 
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);

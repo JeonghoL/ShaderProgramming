@@ -1,7 +1,14 @@
 #version 330
 
 uniform float u_Time;
+
 in vec3 a_Position;
+in float a_Mass;
+in vec2 a_Vel;
+in float a_randomValue;
+
+const float PI = 3.141592;
+const vec2 Gravity = vec2(0, -9.8);
 
 void Basic()
 {
@@ -89,7 +96,25 @@ void Star()
 	gl_Position = newPosition;
 }
 
+// S = So + Vo*t + (1/2)*g*t^2
+void Falling()
+{
+	float t = mod(u_Time * 3.0, 1.0);
+
+	// initPosX & initPosY �� ���� ������
+	float theta = (a_randomValue + 1) * PI;
+	float initPosX = a_Position.x + sin(theta);	
+	float initPosY = a_Position.y + cos(theta);
+
+	vec4 newPosition;
+	newPosition.x = initPosX + a_Vel.x * t + 0.5 * Gravity.x * (t * t);
+	newPosition.y = initPosY + a_Vel.y * t + 0.5 * Gravity.y * (t * t);
+	newPosition.z = 0;
+	newPosition.w = 1.0;
+	gl_Position = newPosition;
+}
+
 void main()
 {
-	Star();
+	Falling();
 }
