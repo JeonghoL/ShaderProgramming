@@ -99,19 +99,26 @@ void Star()
 // S = So + Vo*t + (1/2)*g*t^2
 void Falling()
 {
-	float t = mod(u_Time * 3.0, 1.0);
+	// emitTime
+	float newTime = u_Time - a_randomValue;
+	
+	if (newTime > 0)
+	{
+		float t = mod(newTime, 1.0);
 
-	// initPosX & initPosY �� ���� ������
-	float theta = (a_randomValue + 1) * PI;
-	float initPosX = a_Position.x + sin(theta);	
-	float initPosY = a_Position.y + cos(theta);
+		float theta = a_randomValue * 2 * PI;
+		float initPosX = a_Position.x + sin(theta);	
+		float initPosY = a_Position.y + cos(theta);
 
-	vec4 newPosition;
-	newPosition.x = initPosX + a_Vel.x * t + 0.5 * Gravity.x * (t * t);
-	newPosition.y = initPosY + a_Vel.y * t + 0.5 * Gravity.y * (t * t);
-	newPosition.z = 0;
-	newPosition.w = 1.0;
-	gl_Position = newPosition;
+		vec4 newPosition;
+		newPosition.x = initPosX + a_Vel.x * t + 0.5 * Gravity.x * (t * t);
+		newPosition.y = initPosY + a_Vel.y * t + 0.5 * Gravity.y * (t * t);
+		newPosition.z = 0;
+		newPosition.w = 1.0;
+		gl_Position = newPosition;
+	}
+	else
+		gl_Position = vec4(10000, 100, 0, 1.0);
 }
 
 void main()
