@@ -6,6 +6,7 @@ in vec3 a_Position;
 in float a_Mass;
 in vec2 a_Vel;
 in float a_randomValue;
+in float a_randomValue1;
 
 const float PI = 3.141592;
 const vec2 Gravity = vec2(0, -9.8);
@@ -96,11 +97,16 @@ void Star()
 	gl_Position = newPosition;
 }
 
+float pseudoRandom(float n)
+{
+	return fract(sin(n) * 43758.5453123);
+}
+
 // S = So + Vo*t + (1/2)*g*t^2
 void Falling()
 {
 	// emitTime
-	float newTime = u_Time - a_randomValue;
+	float newTime = u_Time - a_randomValue1;
 	
 	if (newTime > 0)
 	{

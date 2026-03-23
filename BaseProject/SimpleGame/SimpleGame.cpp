@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 		std::cout << "Renderer could not be initialized.. \n";
 	}
 
-	g_Renderer->GenParticle(1000);
+	g_Renderer->GenParticle(5000);
 
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
