@@ -107,14 +107,15 @@ void Falling()
 {
 	// emitTime
 	float newTime = u_Time - a_randomValue1;
-	
+
 	if (newTime > 0)
 	{
+		float scale = pseudoRandom(a_randomValue1);
 		float t = mod(newTime, 1.0);
 
 		float theta = a_randomValue * 2 * PI;
-		float initPosX = a_Position.x + sin(theta);	
-		float initPosY = a_Position.y + cos(theta);
+		float initPosX = a_Position.x * scale + sin(theta);
+		float initPosY = a_Position.y * scale + cos(theta);
 
 		vec4 newPosition;
 		newPosition.x = initPosX + a_Vel.x * t + 0.5 * Gravity.x * (t * t);
@@ -127,7 +128,32 @@ void Falling()
 		gl_Position = vec4(10000, 100, 0, 1.0);
 }
 
+void Fountain()
+{
+	const vec2 FountainGravity = vec2(0, -2.0);
+	float newTime = u_Time - a_randomValue1;
+
+	if (newTime > 0.0)
+	{
+		float t = mod(newTime, 1.5);
+
+		float angle = a_randomValue * PI / 6.0;
+		float speed = 1.5 + pseudoRandom(a_randomValue) * 0.5;
+		float vx = sin(angle) * speed;
+		float vy = cos(angle) * speed;
+
+		vec4 newPosition;
+		newPosition.x = a_Position.x + vx * t;
+		newPosition.y = a_Position.y + (-0.5 + vy * t + 0.5 * FountainGravity.y * (t * t));
+		newPosition.z = 0;
+		newPosition.w = 1.0;
+		gl_Position = newPosition;
+	}
+	else
+		gl_Position = vec4(10000, 100, 0, 1.0);
+}
+
 void main()
 {
-	Falling();
+	Fountain();
 }
