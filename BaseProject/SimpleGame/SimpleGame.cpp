@@ -20,7 +20,7 @@ Renderer *g_Renderer = NULL;
 void RenderScene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Renderer Test
 	g_Renderer->DrawSolidRect(0, 0, 0, 4, 1, 0, 1, 1);
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 		std::cout << "Renderer could not be initialized.. \n";
 	}
 
-	g_Renderer->GenParticle(5000);
+	g_Renderer->GenParticle(10000);
 
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
