@@ -112,8 +112,8 @@ void Falling()
 	if (newTime > 0)
 	{
 		float lifeTime = (a_randomValue2 * 0.1);		// 이거 괄호 채우기 시험문제
-		float scale = pseudoRandom(a_randomValue1);
 		float t = (mod(newTime, lifeTime));				// 이거 괄호 채우기 시험문제
+		float scale = pseudoRandom(a_randomValue1) * (lifeTime - t) / lifeTime;		// (lifeTime - t) / lifeTime 와 (1 - mod(lifeTime, 1.0)) 는 무슨차이지 ?
 
 		float theta = a_randomValue * 2 * PI;
 		float initPosX = a_Position.x * scale + sin(theta);
@@ -155,7 +155,19 @@ void Fountain()
 		gl_Position = vec4(10000, 100, 0, 1.0);
 }
 
+void Thrust()
+{
+	float t = mod(u_Time, 1.0);
+
+	vec4 newPosition;
+	newPosition.x = a_Position.x + 2 * t - 1;			// 이런거 (가운데에서 시작 -> 맨 왼쪽에서 시작)도 시험문제 가능
+	newPosition.y = a_Position.y + 0.5 * sin(t * 2 * 3.141592);
+	newPosition.z = a_Position.z;
+	newPosition.w = 1.0;
+	gl_Position = newPosition;
+}
+
 void main()
 {
-	Falling();
+	Thrust();
 }
