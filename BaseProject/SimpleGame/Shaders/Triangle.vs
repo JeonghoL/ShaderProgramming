@@ -7,6 +7,7 @@ in float a_Mass;
 in vec2 a_Vel;
 in float a_randomValue;
 in float a_randomValue1;
+in float a_randomValue2;
 
 const float PI = 3.141592;
 const vec2 Gravity = vec2(0, -9.8);
@@ -106,12 +107,13 @@ float pseudoRandom(float n)
 void Falling()
 {
 	// emitTime
-	float newTime = u_Time - a_randomValue1;
+	float newTime = u_Time - a_randomValue1 * 3;
 
 	if (newTime > 0)
 	{
+		float lifeTime = (a_randomValue2 * 0.1);		// 이거 괄호 채우기 시험문제
 		float scale = pseudoRandom(a_randomValue1);
-		float t = mod(newTime, 1.0);
+		float t = (mod(newTime, lifeTime));				// 이거 괄호 채우기 시험문제
 
 		float theta = a_randomValue * 2 * PI;
 		float initPosX = a_Position.x * scale + sin(theta);
@@ -155,5 +157,5 @@ void Fountain()
 
 void main()
 {
-	Fountain();
+	Falling();
 }
