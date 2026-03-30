@@ -21,6 +21,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	//Load shaders
 	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
 	m_TriangleShader = CompileShaders("./Shaders/Triangle.vs", "./Shaders/Triangle.fs");
+	m_BaseShader = CompileShaders("./Shaders/Base.vs", "./Shaders/Base.fs");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -77,6 +78,20 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_TriangleVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_TriangleVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+
+	float baseRect[] =
+	{
+		-1.f, -1.f, 0.f, 0, 1,
+		 1.f, -1.f, 0.f, 1, 1,
+		 1.f,  1.f, 0.f, 1, 0,
+		-1.f, -1.f, 0.f, 0, 1,
+		 1.f,  1.f, 0.f, 1, 0,
+		-1.f,  1.f, 0.f, 0, 0,
+	};
+
+	glGenBuffers(1, &m_BaseVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_BaseVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(baseRect), baseRect, GL_STATIC_DRAW);
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -196,6 +211,27 @@ void Renderer::DrawSolidRect(float x, float y, float z, float size, float r, flo
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
 
 	glDisableVertexAttribArray(attribPosition);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::DrawBaseRect(float x, float y, float z, float size, float r, float g, float b, float a)
+{
+	//Program select
+	glUseProgram(m_BaseShader);
+
+	int attribPosition = glGetAttribLocation(m_BaseShader, "a_Pos");
+	int attribTexture = glGetAttribLocation(m_BaseShader, "a_Tex");
+	glEnableVertexAttribArray(attribPosition);
+	glEnableVertexAttribArray(attribTexture);
+	glBindBuffer(GL_ARRAY_BUFFER, m_BaseVBO);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(attribTexture, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (GLvoid*)(sizeof(float) * 3));
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+	glDisableVertexAttribArray(attribTexture);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
