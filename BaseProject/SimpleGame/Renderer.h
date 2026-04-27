@@ -28,6 +28,8 @@ private:
 	void CreateVertexBufferObjects();
 	void GetGLPosition(float x, float y, float *newX, float *newY);
 
+	GLuint CreatePngTexture(char* filePath, GLuint samplingMethod);
+
 	bool m_Initialized = false;
 	
 	unsigned int m_WindowSizeX = 0;
@@ -44,5 +46,9 @@ private:
 
 	GLuint m_ParticleVBO = 0;
 	int m_ParticleCount = 0;
+
+	GLuint m_RgbTexture = 0;
+	GLuint m_NumTexture[10];
+	GLuint m_NumsTexture = 0;
 };
 

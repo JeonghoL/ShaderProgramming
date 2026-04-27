@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Renderer.h"
+#include "LoadPng.h"
 #include <vector>
 
 Renderer::Renderer(int windowSizeX, int windowSizeY)
@@ -22,6 +23,14 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
 	m_TriangleShader = CompileShaders("./Shaders/Triangle.vs", "./Shaders/Triangle.fs");
 	m_BaseShader = CompileShaders("./Shaders/Base.vs", "./Shaders/Base.fs");
+
+	m_RgbTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);
+	m_NumsTexture = CreatePngTexture("./Textures/numbers.png", GL_NEAREST);
+	for (int i = 0; i < 10; i++)
+	{
+		std::string path = "./Textures/" + std::to_string(i) + ".png";
+		m_NumTexture[i] = CreatePngTexture((char*)path.c_str(), GL_NEAREST);
+	}
 
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -222,6 +231,11 @@ void Renderer::DrawBaseRect(float x, float y, float z, float size, float r, floa
 
 	int attribPosition = glGetAttribLocation(m_BaseShader, "a_Pos");
 	int attribTexture = glGetAttribLocation(m_BaseShader, "a_Tex");
+	int uRGBTexture = glGetUniformLocation(m_BaseShader, "u_RGBTex");
+	glUniform1i(uRGBTexture, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_RgbTexture);
+
 	glEnableVertexAttribArray(attribPosition);
 	glEnableVertexAttribArray(attribTexture);
 	glBindBuffer(GL_ARRAY_BUFFER, m_BaseVBO);
@@ -268,6 +282,28 @@ void Renderer::GetGLPosition(float x, float y, float *newX, float *newY)
 {
 	*newX = x * 2.f / m_WindowSizeX;
 	*newY = y * 2.f / m_WindowSizeY;
+}
+
+GLuint Renderer::CreatePngTexture(char* filePath, GLuint samplingMethod)
+{
+	//Load Png
+	std::vector<unsigned char> image;
+	unsigned width, height;
+	unsigned error = lodepng::decode(image, width, height, filePath);
+	if (error != 0)
+	{
+		std::cout << "PNG image loading failed:" << filePath << std::endl;
+	}
+
+	GLuint temp;
+	glGenTextures(1, &temp);
+	glBindTexture(GL_TEXTURE_2D, temp);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+		GL_UNSIGNED_BYTE, &image[0]);
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, samplingMethod);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, samplingMethod);
+	return temp;
 }
 
 void Renderer::GenParticle(int count)
