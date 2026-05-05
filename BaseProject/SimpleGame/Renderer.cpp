@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "LoadPng.h"
 #include <vector>
+#include "Windows.h"
 
 Renderer::Renderer(int windowSizeX, int windowSizeY)
 {
@@ -24,12 +25,12 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_TriangleShader = CompileShaders("./Shaders/Triangle.vs", "./Shaders/Triangle.fs");
 	m_BaseShader = CompileShaders("./Shaders/Base.vs", "./Shaders/Base.fs");
 
-	m_RgbTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);
-	m_NumsTexture = CreatePngTexture("./Textures/numbers.png", GL_NEAREST);
+	m_RgbTexture = CreatePngTexture("./Textures/rgb.png", GL_NEAREST);			// 0 slot
+	m_NumsTexture = CreatePngTexture("./Textures/numbers.png", GL_NEAREST);		// 1 slot
 	for (int i = 0; i < 10; i++)
 	{
 		std::string path = "./Textures/" + std::to_string(i) + ".png";
-		m_NumTexture[i] = CreatePngTexture((char*)path.c_str(), GL_NEAREST);
+		m_NumTexture[i] = CreatePngTexture((char*)path.c_str(), GL_NEAREST);	// 2 ~ 11 slot
 	}
 
 	//Create VBOs
@@ -224,15 +225,23 @@ void Renderer::DrawSolidRect(float x, float y, float z, float size, float r, flo
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+float gTime = 0;
+
 void Renderer::DrawBaseRect(float x, float y, float z, float size, float r, float g, float b, float a)
 {
+	gTime += 0.0001;
+
 	//Program select
 	glUseProgram(m_BaseShader);
 
 	int attribPosition = glGetAttribLocation(m_BaseShader, "a_Pos");
 	int attribTexture = glGetAttribLocation(m_BaseShader, "a_Tex");
+	int u_Time = glGetUniformLocation(m_TriangleShader, "u_Time");
+	glUniform1f(u_Time, gTime);
+
 	int uRGBTexture = glGetUniformLocation(m_BaseShader, "u_RGBTex");
 	glUniform1i(uRGBTexture, 0);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_RgbTexture);
 
@@ -250,7 +259,77 @@ void Renderer::DrawBaseRect(float x, float y, float z, float size, float r, floa
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-float gTime = 0;
+int g_CurrNum = 0;
+
+void Renderer::DrawMultiTextures(float x, float y, float z, float size, float r, float g, float b, float a)
+{
+	gTime += 0.0001;
+
+	//Program select
+	glUseProgram(m_BaseShader);
+
+	int attribPosition = glGetAttribLocation(m_BaseShader, "a_Pos");
+	int attribTexture = glGetAttribLocation(m_BaseShader, "a_Tex");
+	int u_Time = glGetUniformLocation(m_TriangleShader, "u_Time");
+	glUniform1f(u_Time, gTime);
+
+	int uRGBTexture = glGetUniformLocation(m_BaseShader, "u_RGBTex");
+	glUniform1i(uRGBTexture, 0);
+
+	int uCurrNumTexture = glGetUniformLocation(m_BaseShader, "u_CurrNumTex");
+	glUniform1i(uCurrNumTexture, g_CurrNum + 2);
+
+	g_CurrNum++;
+	if (g_CurrNum > 9)
+		g_CurrNum = 0;
+	Sleep(500);
+
+	int uInputNum = glGetUniformLocation(m_BaseShader, "u_InputNum");
+	glUniform1i(uInputNum, g_CurrNum);
+
+	int uNumsTexture = glGetUniformLocation(m_BaseShader, "u_NumsTex");
+	glUniform1i(uNumsTexture, 1);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_RgbTexture);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_NumsTexture);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[0]);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[1]);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[2]);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[3]);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[4]);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[5]);
+	glActiveTexture(GL_TEXTURE8);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[6]);
+	glActiveTexture(GL_TEXTURE9);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[7]);
+	glActiveTexture(GL_TEXTURE10);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[8]);
+	glActiveTexture(GL_TEXTURE11);
+	glBindTexture(GL_TEXTURE_2D, m_NumTexture[9]);
+
+	glEnableVertexAttribArray(attribPosition);
+	glEnableVertexAttribArray(attribTexture);
+	glBindBuffer(GL_ARRAY_BUFFER, m_BaseVBO);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(attribTexture, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (GLvoid*)(sizeof(float) * 3));
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+	glDisableVertexAttribArray(attribTexture);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 void Renderer::DrawTriangle()
 {
