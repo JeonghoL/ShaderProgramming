@@ -23,6 +23,93 @@ void Basic()
 	gl_Position = newPosition;
 }
 
+void Test()
+{
+	float t = mod(u_Time, 1);
+
+	vec4 newPosition;
+	newPosition.x = a_Position.x + t;
+	newPosition.y = a_Position.y + 0.5 * sin(t * 2 * 3.141592);
+	newPosition.z = a_Position.z;
+	newPosition.w = 1.0;
+	gl_Position = newPosition;
+}
+
+
+void Test2()
+{
+	float t = mod(u_Time, 2);
+	
+	vec4 newPosition;
+	newPosition.x = a_Position.x + t - 1;
+	newPosition.y = a_Position.y + 0.5 * sin(t * 3.141592);
+	newPosition.z = a_Position.z;
+	newPosition.w = 1.0;
+	gl_Position = newPosition;
+}
+
+void Test3()
+{
+	float t = mod(u_Time, 2);
+	
+	vec4 newPosition;
+	newPosition.x = a_Position.x + t - 1;
+	newPosition.y = a_Position.y + 0.5 * sin(t * 2 * 3.141592);
+	newPosition.z = a_Position.z;
+	newPosition.w = 1.0;
+	gl_Position = newPosition;
+}
+
+void Test4()
+{
+	float t = mod(u_Time, 1);
+
+	vec4 newPosition;
+	newPosition.x = a_Position.x + 0.5 * cos(2 * t * PI);
+	newPosition.y = a_Position.y + 0.5 * sin(2 * t * PI);
+	newPosition.z = a_Position.z;
+	newPosition.w = 1.0;
+	gl_Position = newPosition;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Sin1()
 {
 	float t = mod(u_Time, 1);
@@ -46,7 +133,7 @@ void Sin2()
 
 void Sin3()
 {
-	float t = mod(u_Time * 5, 2);
+	float t = mod(u_Time, 2);
 
 	vec4 newPosition;
 	newPosition.x = a_Position.x + t - 1;
@@ -223,5 +310,5 @@ void Fire()
 
 void main()
 {
-	Fire();
+	Falling();
 }

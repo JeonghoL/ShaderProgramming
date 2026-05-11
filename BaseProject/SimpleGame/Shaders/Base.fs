@@ -14,7 +14,7 @@ const float c_PI = 3.141592;
 
 void Example()
 {
-    float split = step(0.5, v_Texture.x);
+    float split = step(0.5, v_Texture.y);
 
     vec3 color = mix(vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), split);
 
@@ -217,7 +217,7 @@ void Nums()
 void main()
 {
     //TextureSampling();
-    //TextureQ1();
+    TextureQ3();
     //TextureQ3();
     
     //Flag();
@@ -225,8 +225,8 @@ void main()
     //Example();
     //Example2();
 
-    //TextureQ41();
+    //TextureQ4();
 
     //Num();
-    Nums();
+    //Nums();
 }

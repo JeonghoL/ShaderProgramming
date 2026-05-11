@@ -435,7 +435,7 @@ void Renderer::GenParticle(int count)
 
 void Renderer::DrawParticle()
 {
-	gTime += 0.002f;
+	gTime += 0.0002f;
 	glUseProgram(m_TriangleShader);
 
 	glUniform1f(glGetUniformLocation(m_TriangleShader, "u_Time"), gTime);
